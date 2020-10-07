@@ -24,29 +24,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SAWHSDKLib;
+using SAWSSDKLib;
 
 namespace SAWHtoGit
 {
 	// Helper class to interface with the SAWH API
 	class SAWHClient
 	{
-		SAWHAppObject sawObject;
+		SAWSAppObject sawObject;
 
 		// Login to the server and connect to the specified repository
 		public bool ConnectToServer(int orgId, string user, string password, string repo) {
-			sawObject = new SAWHAppObject();
+			sawObject = new SAWSAppObject();
 
 			long ResultValue;
 			Enum_EncryptType EncryptType;
-			SAWHGlobalMessageSet GlobalMessageSet;
+			// SAWSGlobalMessageSet GlobalMessageSet;
 			string PlanName;
 			bool Cancelled;
 			string ResultDescription;
 
 			sawObject.SetConnectionType(Enum_ConnectionType.Enum_BroadBandConnection);
 
-			ResultValue = sawObject.ConnectToServer(orgId, false, true, "", 0, Enum_ProxyType.Enum_NOPROXY, "", 0, "", "", out EncryptType, out GlobalMessageSet, out PlanName, out Cancelled, out ResultDescription);
+			//ResultValue = sawObject.ConnectToServer(
+
+			//    );
+
+			// TODO: connect to server
+			ResultValue = 0;
+			ResultDescription = string.Empty;
+
+			//ResultValue = sawObject.ConnectToServer(
+			//	orgId,
+			//	false, 
+			//	true, 
+			//	"", 
+			//	0, 
+			//	Enum_ProxyType.Enum_NOPROXY, 
+			//	"", 
+			//	0, 
+			//	"", 
+			//	"", 
+			//	out EncryptType,
+			//	out GlobalMessageSet, 
+			//	out PlanName, 
+			//	out Cancelled, 
+			//	out ResultDescription);
+
 			Console.WriteLine("Result: {0}, {1}", ResultValue, ResultDescription);
 			if (ResultValue == 0)
 			{
@@ -55,7 +79,9 @@ namespace SAWHtoGit
 				bool Cancelled1;
 				string ResultDescription1;
 
-				sawObject.Login(user, password, repo, out MustChangePassword, out DaysOfExpiration, out Cancelled1, out ResultDescription1);
+				//sawObject.Login(user, password, repo, out MustChangePassword, out DaysOfExpiration, out Cancelled1, out ResultDescription1);
+				sawObject.Login("", "", "", "", new SAWSKeyFileSet(), out MustChangePassword, out DaysOfExpiration, out Cancelled1, out ResultDescription1);
+
 				Console.WriteLine("Login: {0}", ResultDescription1);
 
 				return true;
@@ -68,17 +94,17 @@ namespace SAWHtoGit
 		public IDictionary<long, Changeset> GetProjectHistory(string project, IDictionary<string, string> movedFiles)
 		{
 			long ResultValue;
-			SAWHProjectHistoryParam HistoryParams;
-			SAWHHistorySet HistorySet;
+			SAWSProjectHistoryParam HistoryParams;
+			SAWSHistorySet HistorySet;
 			bool Cancelled;
 			string ResultDescription;
-			SAWHHistoryOrderBy HistoryOrderBy;
+			SAWSHistoryOrderBy HistoryOrderBy;
 
 			SortedDictionary<long, Changeset> History = new SortedDictionary<long, Changeset>();
 
-			HistoryOrderBy = new SAWHHistoryOrderBy();
+			HistoryOrderBy = new SAWSHistoryOrderBy();
 			HistoryOrderBy.HistorySortBy = Enum_HistorySortBy.Enum_HistorySortByDate;
-			HistoryParams = new SAWHProjectHistoryParam();
+			HistoryParams = new SAWSProjectHistoryParam();
 			HistoryParams.IsRecursive = true;
 			HistoryParams.AddOrder(HistoryOrderBy);
 
@@ -92,7 +118,7 @@ namespace SAWHtoGit
 			{
 				long Count = HistorySet.Count;
 
-				foreach (ISAWHHistory HistoryItem in HistorySet) {
+				foreach (ISAWSHistory HistoryItem in HistorySet) {
 					/*
 					// Debugging info on the fetched history item
 					Console.WriteLine("History Item: {0}\t{1}\t{2}\t{3}", 
@@ -164,7 +190,7 @@ namespace SAWHtoGit
 			long ResultValue;
 			bool Cancelled;
 			string ResultDescription;
-			SAWHDiffMergeParam DiffMergeParam = new SAWHDiffMergeParam();
+			SAWSDiffMergeParam DiffMergeParam = new SAWSDiffMergeParam();
 
 			Console.WriteLine("Fetching changeset {0} ({1}) by {2}: {3}", change.Id, change.CommitDate, change.Author, change.Comment);
 
